@@ -89,7 +89,7 @@ int main(int argc, char** argv)
 ## 4.3 配置launch.json
 - launch.json是vscode用于配置调试信息的文件，比如制定调试语言环境，指定调试类型等。
 
-按F5启动调试，会自动生成launch.json文件，将其内容修改为
+按F5启动调试，会自动生成launch.json文件，如果是调试单节点应用，将其内容修改为
 ```json
 {
     "version": "0.2.0",
@@ -116,6 +116,24 @@ int main(int argc, char** argv)
     ]
 }
 ```
+如果是调试ros launch文件，将其修改为
+```json
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ROS: Launch",
+            "type": "ros",
+            "request": "launch",
+            "target": "${workspaceFolder}/src/imu_launch/launch/imu_msg.launch", // <<< Configure path to your launch file
+            "preLaunchTask": "make_debug", // <<< This is the task that will run before debugging starts
+        }
+    ] 
+}
+```
 
 ## 4.4配置 task.json
 - task.json用于编译
@@ -137,6 +155,33 @@ int main(int argc, char** argv)
             },
             "problemMatcher": "$msCompile"
         },
+    ]
+}
+```
+或
+```json
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 5
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make motion_control",
+            "type": "shell",
+            "command": " cd ${workspaceFolder}  && catkin build  &&  source devel/setup.bash  ",
+            //"args": ["-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_VERBOSE_MAKEFILE=ON", ""],
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
     ]
 }
 ```
